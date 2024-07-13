@@ -1,7 +1,8 @@
-import { List, ActionPanel, Action, getPreferenceValues, Detail, Icon, showToast, Toast } from "@raycast/api";
+import { List, ActionPanel, Action, getPreferenceValues, Icon, showToast, Toast } from "@raycast/api";
 import fs from "fs";
 import path from "path";
 import { useState } from "react";
+import { ShowNoteAndPbCopy } from "./ShowNoteAndPbCopy";
 
 interface ShowNoteProps {
   filePath: string;
@@ -84,7 +85,7 @@ function ShowNote(props: ShowNoteProps) {
               <Action.Push
                 title="Show Details"
                 icon={Icon.Circle}
-                target={<Detail markdown={point.replace("- ", "")} />}
+                target={<ShowNoteAndPbCopy content={point.replace("- ", "")} />}
               />
               <Action.Open title="Open File" target={props.filePath} />
             </ActionPanel>

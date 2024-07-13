@@ -1,18 +1,9 @@
-import {
-  List,
-  ActionPanel,
-  Action,
-  Detail,
-  getPreferenceValues,
-  showToast,
-  Toast,
-  Icon,
-  confirmAlert,
-} from "@raycast/api";
+import { List, ActionPanel, Action, getPreferenceValues, showToast, Toast, Icon, confirmAlert } from "@raycast/api";
 import fs from "fs";
 import { useState } from "react";
 import { formatDateTime, replaceDatePlaceholders } from "./utils/FormatDateTime";
 import path from "path";
+import { ShowNoteAndPbCopy } from "./ShowNoteAndPbCopy";
 
 interface Preferences {
   directory: string;
@@ -123,7 +114,7 @@ export default function Command() {
                   <Action.Push
                     title="Show Details"
                     icon={Icon.Circle}
-                    target={<Detail markdown={point.replace(/^- /, "")} />}
+                    target={<ShowNoteAndPbCopy content={point.replace(/^- /, "")} />}
                   />
                   <Action
                     title="Delete Memo"
