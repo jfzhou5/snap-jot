@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import { useState } from "react";
 import { ShowNoteAndPbCopy } from "./ShowNoteAndPbCopy";
+import { Memo } from "./memo";
 
 interface Preferences {
   directory: string;
@@ -33,12 +34,16 @@ export default function Command() {
     }
   };
 
-  const files = readFiles().reverse();
+  const files = readFiles()
+    .filter((v) => !v.name.includes(".DS_Store"))
+    .reverse();
 
-  let fileContent = "";
+  let fileContent: Array<string> = [];
   try {
     for (const file of files) {
-      fileContent += fs.readFileSync(file.path, "utf-8");
+      fileContent = fileContent.concat(
+        JSON.parse(fs.readFileSync(file.path, "utf-8")).map((v: Memo) => `${v.date}   ${v.content}`),
+      );
     }
   } catch (error) {
     showToast({
@@ -47,30 +52,25 @@ export default function Command() {
       message: (error as Error).message, // Type assertion to specify the type of 'error'
     });
   }
-  const bulletPoints = fileContent
-    .split("\n")
-    .filter((line) => line.startsWith("- "))
-    .reverse();
+  const bulletPoints = fileContent.reverse();
   const [searchText, setSearchText] = useState("");
   const filteredBulletPoints = bulletPoints.filter((point) => point.toLowerCase().includes(searchText.toLowerCase()));
 
   return (
     <List searchBarPlaceholder="Search Notes" onSearchTextChange={setSearchText} throttle={true}>
-      {filteredBulletPoints.map((point, index) => (
-        <List.Item
-          key={index}
-          title={point.replace("- ", "")}
-          actions={
-            <ActionPanel>
-              <Action.Push
-                title="Show Details"
-                icon={Icon.Circle}
-                target={<ShowNoteAndPbCopy content={point.replace("- ", "")} />}
-              />
-            </ActionPanel>
-          }
-        />
-      ))}
+      {filteredBulletPoints.map((point, index) => {
+        return (
+          <List.Item
+            key={index}
+            title={point.slice(17)}
+            actions={
+              <ActionPanel>
+                <Action.Push title="Show Details" icon={Icon.Circle} target={<ShowNoteAndPbCopy content={point} />} />
+              </ActionPanel>
+            }
+          />
+        );
+      })}
     </List>
   );
 }

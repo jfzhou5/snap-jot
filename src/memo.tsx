@@ -12,9 +12,9 @@ import {
 import { useForm } from "@raycast/utils";
 import fs from "fs";
 import path from "path";
-import { formatDateTime, replaceDatePlaceholders } from "./utils/FormatDateTime";
+import { formatDateTime } from "./utils/FormatDateTime";
 
-interface Memo {
+interface MemoContent {
   memo: string;
 }
 
@@ -26,36 +26,35 @@ interface Preferences {
   template: string;
 }
 
+export type Memo = {
+  date: string;
+  content: string;
+};
+
 export default function Command(props: LaunchProps<{ draftValues: Memo }>) {
   const preferences = getPreferenceValues<Preferences>();
-  const { directory, format, timeFormat, prefix, template } = preferences;
+  const { directory, format, prefix } = preferences;
   const { draftValues } = props;
 
-  // if prefix is not include "A" and timeFormat is 12, add "A" to prefix.
-  const timestamp = timeFormat === "12" && !prefix.includes("A") ? prefix + "A " : prefix;
-
-  function saveMemo(values: Memo) {
+  function saveMemo(values: MemoContent) {
     try {
       const filePath = path.join(directory, formatDateTime(new Date(), format));
-      const memo = formatDateTime(new Date(), timestamp, timeFormat === "12") + values.memo;
-      let memoContent = memo;
-      // if file is not exist, create file and write memo.
-      if (!fs.existsSync(filePath)) {
-        // if template is empyt, content is empty.
-        const templateContent = !template ? "" : fs.readFileSync(template, "utf8");
-        memoContent = replaceDatePlaceholders(new Date(), templateContent) + "\n" + memo;
-      } else {
-        // if file exists, check if it ends with a newline and add one if not
+      const memo: Memo = {
+        date: formatDateTime(new Date(), prefix),
+        content: values.memo,
+      };
+      let newContent: Array<Memo> = [];
+      if (fs.existsSync(filePath)) {
         const existingContent = fs.readFileSync(filePath, "utf8");
-        if (!existingContent.endsWith("\n")) {
-          fs.appendFileSync(filePath, "\n");
-        }
+        newContent = JSON.parse(existingContent);
       }
-      fs.appendFileSync(filePath, memoContent);
+      newContent.push(memo);
+
+      fs.writeFileSync(filePath, JSON.stringify(newContent, null, 2));
       const successOptions: Toast.Options = {
         style: Toast.Style.Success,
         title: "Memo Saved",
-        message: memo,
+        message: memo.content,
       };
       showToast(successOptions);
     } catch (error) {
@@ -68,7 +67,7 @@ export default function Command(props: LaunchProps<{ draftValues: Memo }>) {
     }
   }
 
-  const { handleSubmit, reset, itemProps } = useForm<Memo>({
+  const { handleSubmit, reset, itemProps } = useForm<MemoContent>({
     onSubmit(values) {
       saveMemo(values);
       reset();
@@ -90,7 +89,7 @@ export default function Command(props: LaunchProps<{ draftValues: Memo }>) {
         title="Memo"
         {...itemProps.memo}
         placeholder="Whats on your mind..."
-        defaultValue={draftValues?.memo}
+        defaultValue={draftValues?.content}
       />
     </Form>
   );

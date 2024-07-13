@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import { useState } from "react";
 import { ShowNoteAndPbCopy } from "./ShowNoteAndPbCopy";
+import { Memo } from "./memo";
 
 interface ShowNoteProps {
   filePath: string;
@@ -37,7 +38,9 @@ export default function Command() {
     }
   };
 
-  const files = readFiles().reverse();
+  const files = readFiles()
+    .filter((v) => !v.name.includes(".DS_Store"))
+    .reverse();
 
   return (
     <List searchBarPlaceholder="Search Notes">
@@ -57,9 +60,11 @@ export default function Command() {
 }
 
 function ShowNote(props: ShowNoteProps) {
-  let fileContent = "";
+  let fileContent: Array<string> = [];
   try {
-    fileContent = fs.readFileSync(props.filePath, "utf-8");
+    fileContent = JSON.parse(fs.readFileSync(props.filePath, "utf-8")).map(
+      (v: Memo) => `${v.date}   ${v.content}`,
+    );
   } catch (error) {
     showToast({
       style: Toast.Style.Failure,
@@ -67,10 +72,7 @@ function ShowNote(props: ShowNoteProps) {
       message: (error as Error).message, // Type assertion to specify the type of 'error'
     });
   }
-  const bulletPoints = fileContent
-    .split("\n")
-    .filter((line) => line.startsWith("- "))
-    .reverse();
+  const bulletPoints = fileContent.reverse();
   const [searchText, setSearchText] = useState("");
   const filteredBulletPoints = bulletPoints.filter((point) => point.toLowerCase().includes(searchText.toLowerCase()));
 
@@ -79,14 +81,10 @@ function ShowNote(props: ShowNoteProps) {
       {filteredBulletPoints.map((point, index) => (
         <List.Item
           key={index}
-          title={point.replace("- ", "")}
+          title={point.slice(11)}
           actions={
             <ActionPanel>
-              <Action.Push
-                title="Show Details"
-                icon={Icon.Circle}
-                target={<ShowNoteAndPbCopy content={point.replace("- ", "")} />}
-              />
+              <Action.Push title="Show Details" icon={Icon.Circle} target={<ShowNoteAndPbCopy content={point} />} />
               <Action.Open title="Open File" target={props.filePath} />
             </ActionPanel>
           }

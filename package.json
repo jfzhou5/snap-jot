@@ -21,48 +21,22 @@
       "default": "~/Documents"
     },
     {
-      "type": "file",
-      "name": "template",
-      "title": "Memo template",
-      "description": "If there is no file, create a file with the template written in it.",
-      "required": false
-    },
-    {
       "type": "textfield",
       "name": "format",
       "title": "File name format",
       "required": false,
-      "description": "ex) YYYY-MM-DD.md -> 2023-12-11.md",
-      "default": "YYYY-MM-DD.md",
-      "placeholder": "YYYY-MM-DD.md"
-    },
-    {
-      "type": "dropdown",
-      "name": "timeFormat",
-      "title": "Time format",
-      "required": true,
-      "description": "Choose '12' for AM/PM format, or '24' for a military-style time display.",
-      "default": "24",
-      "data": [
-        {
-          "title": "24",
-          "value": "24"
-        },
-        {
-          "title": "12",
-          "value": "12"
-        }
-      ],
-      "placeholder": "24"
+      "description": "ex) YYYY-MM-DD.json -> 2023-12-11.json",
+      "default": "YYYY-MM-DD.json",
+      "placeholder": "YYYY-MM-DD.json"
     },
     {
       "type": "textfield",
       "name": "prefix",
       "title": "Memo prefix",
       "required": false,
-      "description": "ex) - HH:mm  -> - 12:34 My first memo.\n if you want to use AM/PM format, use 'A' and set 'timeFormat' to '12'.",
-      "default": "- HH:mm ",
-      "placeholder": "- HH:mm"
+      "description": "ex) YYYY-MM-DD HH:mm  -> 2024-07-13 12:34 My first memo.",
+      "default": "YYYY-MM-DD HH:mm",
+      "placeholder": "YYYY-MM-DD HH:mm"
     }
   ],
   "commands": [
@@ -71,13 +45,10 @@
       "title": "Jot Down",
       "subtitle": "Create a memo with a timestamp",
       "description": "Create a memo with a timestamp",
-      "category": ["Productivity","Documentation"],
-      "mode": "view"
-    },
-    {
-      "name": "dailyNote",
-      "title": "Daily Note",
-      "description": "Search or add to daily note.",
+      "category": [
+        "Productivity",
+        "Documentation"
+      ],
       "mode": "view"
     },
     {
