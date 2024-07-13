@@ -52,7 +52,9 @@ template file example:
   }
 ]
 ```
+Tips: when you show details of the memo, the `content` will be copied to clipboard automaticly.
 
 Pics example:
-<img src="https://github.com/jfzhou5/snap-jot/blob/main/assets/example-for-code.jpg?raw=true" width="140" height="140" align="center" />
-<img src="https://github.com/jfzhou5/snap-jot/blob/main/assets/example.jpg?raw=true" width="140" height="140" align="center" />
+
+<img src="https://github.com/jfzhou5/snap-jot/blob/main/assets/example-for-code.jpg?raw=true" width="80%" align="center" />
+<img src="https://github.com/jfzhou5/snap-jot/blob/main/assets/example.jpg?raw=true" width="80%" align="center" />
