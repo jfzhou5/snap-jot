@@ -34,9 +34,7 @@ export default function Command() {
     }
   };
 
-  const files = readFiles()
-    .filter((v) => !v.name.includes(".DS_Store"))
-    .reverse();
+  const files = readFiles().filter((v) => !v.name.includes(".DS_Store"));
 
   let fileContent: Array<string> = [];
   try {
