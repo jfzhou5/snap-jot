@@ -5,8 +5,10 @@
   "description": "Create a memo with a timestamp",
   "icon": "command-icon.png",
   "author": "k41531",
+  "owner": "jfzhou5",
   "contributors": [
-    "longy2k"
+    "longy2k",
+    "jfzhou5"
   ],
   "license": "MIT",
   "preferences": [
@@ -80,8 +82,14 @@
     },
     {
       "name": "listFiles",
-      "title": "Search Notes",
+      "title": "Search Notes by files",
       "description": "Search notes from specified folder.",
+      "mode": "view"
+    },
+    {
+      "name": "listAllNotes",
+      "title": "Search Notes in all files",
+      "description": "Search notes from all files.",
       "mode": "view"
     }
   ],
